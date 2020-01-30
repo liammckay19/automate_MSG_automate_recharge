@@ -38,3 +38,6 @@ Note, although not recommended, you can also directly enter the GL and DPE data 
 - download from google drive the 20c and 4c logs
 - calculate recharge for the last month from today (if today is 1/20/2020, it will calculate from 12/1/2019 to 1/1/2020)
 - upload rechargeSummaryYYYY_MM_DD_TO_YYYY_MM_DD.xlsx to google drive <code> xrayFacilityRecharge > monthlyRecharge </code>
+
+## Known Errors
+- going from 12/1/2020 to 1/1/2021 will not be named correctly in the RockImager Google Drive. It will be 12/1/2020_TO_1/1/2020

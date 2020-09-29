@@ -8,9 +8,8 @@
  With the addition of a scheduled GUI automation to the RockImagers in the 4C and 20C room, taking time out of downloading Drive files will add time to the lab manager's day.
 
 ## Installation
-Clone MSG_automate_recharge: 
 
-<code>git clone https://github.com/liammckay19/MSG_automate_recharge.git</code>
+Clone this repo: 
 
 <code>git clone https://github.com/liammckay19/automate_MSG_automate_recharge</code>
 
@@ -22,6 +21,7 @@ Clone MSG_automate_recharge:
 
 activate automate_msg_automate_recharge environment <code> source recharge_auto_env/bin/activate </code>
 
+Put "mycreds" file in the same directory
 
 ## Usage
 ### 1. Upload GL and DPE from last month to the Google Spreadsheet
@@ -38,9 +38,9 @@ Note, although not recommended, you can also directly enter the GL and DPE data 
 ### 2. Run automation (the reason to use this script)
 
 - Activate automate_msg_automate_recharge environment <code> source recharge_auto_env/bin/activate </code>
-- <code>bash run.sh</code>
+- <code>python createRecharge.py</code>
 
-#### What does run.sh do? (things you don't have to do)
+#### What does createRecharge.py do? (things you don't have to do)
 - download from google drive the 20c and 4c logs
 - calculate recharge for the last month from today (if today is 1/20/2020, it will calculate from 12/1/2019 to 1/1/2020)
 - upload rechargeSummaryYYYY_MM_DD_TO_YYYY_MM_DD.xlsx to google drive <code> xrayFacilityRecharge > monthlyRecharge </code>

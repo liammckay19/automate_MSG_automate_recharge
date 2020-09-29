@@ -11,17 +11,17 @@
 
 Clone this repo: 
 
-<code>git clone https://github.com/liammckay19/automate_MSG_automate_recharge</code>
+1. <code>git clone https://github.com/liammckay19/automate_MSG_automate_recharge</code>
 
-<code> python3 -m venv recharge_auto_env </code> --important for automation to have the same environment name
+2. <code> python3 -m venv recharge_auto_env </code> --important for automation to have the same environment name
 
-<code>pip install -r requirements.txt</code>
+3. <code>pip install -r requirements.txt</code>
 
-<code> deactivate </code>
+4. <code> deactivate </code>
 
-activate automate_msg_automate_recharge environment <code> source recharge_auto_env/bin/activate </code>
+5. activate automate_msg_automate_recharge environment <code> source recharge_auto_env/bin/activate </code>
 
-Put "mycreds" file in the same directory
+6. Put "mycreds" file in the same directory
 
 ## Usage
 ### 1. Upload GL and DPE from last month to the Google Spreadsheet

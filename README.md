@@ -3,13 +3,11 @@
 
  Automates Loren Jiang's scripts and Google Sheets for doing 1 month previous. If today was January 12, 2020 it would download google forms and calculate recharge for December 1, 2019 to January 1, 2019 
  
- GUI automation in the RockImager software has been added and scheduled to download data for the last month. It automatically uploads these files to Google Drive <code> ljiang > xrayFacilityRecharge > equipmentLogs > RockImagerEventLogs > rockImager[20c,4c]</code>
- 
- With the addition of a scheduled GUI automation to the RockImagers in the 4C and 20C room, taking time out of downloading Drive files will add time to the lab manager's day.
+ With the addition of a scheduled GUI automation to the RockImagers in the 4C and 20C room, taking time out of downloading Drive files will free time from the lab manager's day.
 
 ## Installation
 
-Clone this repo: 
+How to install this repo
 
 1. <code>git clone https://github.com/liammckay19/automate_MSG_automate_recharge</code>
 
@@ -47,3 +45,6 @@ Note, although not recommended, you can also directly enter the GL and DPE data 
 
 ## Known Errors
 - going from 12/1/2020 to 1/1/2021 will not be named correctly in the RockImager Google Drive. It will be 12/1/2020_TO_1/1/2020
+ 
+## Future Directions
+- GUI automation in the RockImager software needs to be added and scheduled to download data for the last month. It automatically uploads these files to Google Drive <code> ljiang > xrayFacilityRecharge > equipmentLogs > RockImagerEventLogs > rockImager[20c,4c]</code>

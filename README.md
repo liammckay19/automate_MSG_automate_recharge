@@ -1,5 +1,5 @@
 # automate_MSG_automate_recharge
-
+Author: Liam McKay (liammckay19)
 
  Automates Loren Jiang's scripts and Google Sheets for doing 1 month previous. If today was January 12, 2020 it would download google forms and calculate recharge for December 1, 2019 to January 1, 2019 
  
@@ -48,3 +48,4 @@ Note, although not recommended, you can also directly enter the GL and DPE data 
  
 ## Future Directions
 - GUI automation in the RockImager software needs to be added and scheduled to download data for the last month. It automatically uploads these files to Google Drive <code> ljiang > xrayFacilityRecharge > equipmentLogs > RockImagerEventLogs > rockImager[20c,4c]</code>
+

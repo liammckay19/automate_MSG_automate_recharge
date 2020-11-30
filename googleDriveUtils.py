@@ -1,13 +1,17 @@
 import pygsheets as pyg
 
+
 def authorizeGoogleDriveUsage():
     return pyg.authorize(service_file='/Users/liam_msg/Documents/MSG_automate_recharge/msg-Recharge-24378e029f2d.json')
+
 
 # authorize google drive python
 gc = authorizeGoogleDriveUsage()
 
+
 class UserException(Exception):
     pass
+
 
 # obtain PI and their use_types from Google drive spreadsheet
 def getPITypes():
@@ -29,15 +33,17 @@ def getPITypes():
         else:
             coreUsers.append(pi)
         k += 1
-    print(regUsers)
+    print("Core: ", coreUsers)
+    print("Associate: ", associateUsers)
+    print("Regular: ", regUsers)
     return [coreUsers, associateUsers, regUsers, coreUsers + associateUsers + regUsers]
-
 
 
 def getRechargeConst():
     df_rechargeConst = gc.open_by_key('1d6GVWGwwrlh_lTKxVRI08xZSiE__Zieu3WWtwbmOMlE'
                                       ).worksheet_by_title('master').get_as_df()
     return df_rechargeConst
+
 
 # obtain usage log data from Google drive forms/spreadsheets (mosquito, mosquitoLCP, dragonfly)
 def getGDriveLogUsage():
@@ -52,4 +58,3 @@ def getGDriveLogUsage():
 
 def getGoogleDriveGL():
     return gc.open_by_key('1L610loj5s41wQFYFnzNafI2OeY9kxL0WuPwebtW5k3Q').sheet1.get_as_df()
-

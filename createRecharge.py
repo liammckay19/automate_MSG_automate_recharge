@@ -1,5 +1,4 @@
 import os
-import subprocess
 
 import downloadRockimagerFiles
 import calculateRecharge_auto
@@ -17,7 +16,7 @@ def main():
     print("calculating recharge")
     calculateRecharge_auto.main()
 
-    subprocess.run("cp ./temp/*.txt ./rockimagerBacklogs/".split(" "))
+    os.system("mv ./temp/*.txt ./rockimagerBacklogs/")
 
     print("uploading to google drive")
     uploadGDriveMonthlyRecharges.main()

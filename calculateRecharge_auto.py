@@ -30,8 +30,8 @@ def getGDriveLogUsage(dates):
     # screen order site changed to xtalscreenorder june 19
     df_mosquitoLCPLogRAW, df_mosquitoLogRAW, df_dragonflyLogRAW, df_screenOld = gdrive.getGDriveLogUsage()
     df_screenOrders = get_xtalscreenorders()
-    print(df_screenOld.columns)
-    print(df_screenOrders.columns)
+    # print(df_screenOld.columns)
+    # print(df_screenOrders.columns)
 
 
     df_mosquitoLCPLog = clean.clean_DF_MosquitoLCP(df_mosquitoLCPLogRAW, dates)
@@ -163,8 +163,8 @@ def getCellByRowCol(df, rowHeader, rowSelector, colSelector):
 
 
 def main():
-    coldFile = glob.glob('temp/20c*')[0]
-    roomFile = glob.glob('temp/4c*')[0]
+    coldFile = glob.glob('./temp/20c*')[0]
+    roomFile = glob.glob('./temp/4c*')[0]
 
     # calculate start and end dates
     start_date, end_date = '', ''
@@ -187,8 +187,8 @@ def main():
     df_rechargeConst = gdrive.getRechargeConst()
     dfs_input = [df_mosquitoLog, df_mosquitoLCPLog, df_dragonflyLog, df_RockImager_1,
                  df_RockImager_2, df_GL, df_screenOrders, df_rechargeConst]
-    for df in dfs_input:
-        print(df.head())
+    # for df in dfs_input:
+    #     print(df.head())
     users = [coreUsers, associateUsers, regUsers, allUsers]
     rechargeSummary, fileOut_lst, dfOut_lst = recharge.calculateRecharge(dfs_input, [start_date, end_date], users)
     print(rechargeSummary)

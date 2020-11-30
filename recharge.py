@@ -33,6 +33,9 @@ def itemizeDragonflyLog(df_dragonflyLog, start_date, end_date, costHDP, costSDP,
 
 
 def itemizeRockimagerLog(df_RockImager_1, df_RockImager_2, start_date, end_date, costRockImagerTime):
+    print(df_RockImager_1.loc[df_RockImager_1['Group']=='nan'])
+    print(df_RockImager_2.loc[df_RockImager_2['Group']=='nan'])
+    # print(df_RockImager_2['Group'].fillna(df_RockImager_2['User Name']).value_counts())
     # Extract relevant data from df_RockImager in the given date range
     wantedRockCol = ['User Name', 'Project', 'Experiment', 'Plate Type', 'Rock Dur (min)']
 
@@ -40,9 +43,8 @@ def itemizeRockimagerLog(df_RockImager_1, df_RockImager_2, start_date, end_date,
     rockImagerUsageYearByPI_1 = df_RockImager_1.groupby([df_RockImager_1.index.year, 'Group'])
     itemizedRockMonthByPI_1 = rockImagerUsageMonthByPI_1.apply(lambda x: x.head(
         len(x.index)))[wantedRockCol].loc[start_date:end_date]
-
     itemizedRockMonthByPI_1 = itemizedRockMonthByPI_1[
-        (itemizedRockMonthByPI_1['Rock Dur (min)'] > 0)]  # remove rows if 'Dur (min)' <= 0
+        (itemizedRockMonthByPI_1['Rock Dur (min)'] > 0.0)]  # remove rows if 'Dur (min)' <= 0
     itemizedRockMonthByPI_1['Cost/min'] = costRockImagerTime
     itemizedRockMonthByPI_1['RockImager Total Cost'] = costRockImagerTime * itemizedRockMonthByPI_1['Rock Dur (min)']
 
@@ -54,7 +56,7 @@ def itemizeRockimagerLog(df_RockImager_1, df_RockImager_2, start_date, end_date,
         len(x.index)))[wantedRockCol].loc[start_date:end_date]
 
     itemizedRockMonthByPI_2 = itemizedRockMonthByPI_2[
-        (itemizedRockMonthByPI_2['Rock Dur (min)'] > 0)]  # remove rows if 'Dur (min)' <= 0
+        (itemizedRockMonthByPI_2['Rock Dur (min)'] > 0.0)]  # remove rows if 'Dur (min)' <= 0
     itemizedRockMonthByPI_2['Cost/min'] = costRockImagerTime
     itemizedRockMonthByPI_2['RockImager Total Cost'] = costRockImagerTime * itemizedRockMonthByPI_2['Rock Dur (min)']
 
@@ -236,7 +238,7 @@ def calculateRecharge(dfs, date_range, users):
             lst_monthlyExpenses.append(row['Usage prop'] * df_GL_monthlyExpenses.loc[index[0]]['Actual'])
             sumMonthFacFee = monthlyRechargeTotal.loc[index[0]]['Facility Fee'].sum()
             diff = df_GL_payroll.loc[index[0]]['Actual'] - sumMonthFacFee
-            print(lst_monthlyExpenses)
+            # print(lst_monthlyExpenses)
             if (diff <= 0):  # if total facility fees exceed payroll total, then charge 0 per lab
                 diff = 0
             lst_payroll.append(row['Usage prop'] * diff)
@@ -289,6 +291,6 @@ def calculateRecharge(dfs, date_range, users):
 
     dfOut = [itemizedMosqCryMonthByPI, itemizedRockMonthByPI_1,
              itemizedRockMonthByPI_2, itemizedDFlyMonthByPI, itemizedSOMonthByPI]
-    print(itemizedRockMonthByPI_1)
-    print(itemizedRockMonthByPI_2)
+    # print(itemizedRockMonthByPI_1)
+    # print(itemizedRockMonthByPI_2)
     return outSummary, fileOut, dfOut

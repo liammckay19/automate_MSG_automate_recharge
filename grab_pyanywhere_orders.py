@@ -15,7 +15,7 @@ def get_orders_df_from_xtalscreenorder_pythonanywhere_website():
                 rows.append(headers[1:])
             else:
                 rows.append(line.rstrip().replace("\"","").split(",")[1:])
-    print(rows[0])
+    # print(rows[0])
     orders_df = pd.DataFrame(rows[1:], columns=rows[0])
     orders_df = orders_df.dropna()
     return orders_df

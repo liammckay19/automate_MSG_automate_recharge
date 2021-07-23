@@ -90,7 +90,6 @@ def upload_files(drive, folder_id, src_folder_name):
         else:
             print('file {0} is empty'.format(file1))
 
-
 def main():
     os.chdir('/Users/liam_msg/Documents/automate_MSG_automate_recharge')
 
@@ -127,7 +126,7 @@ def main():
     except IndexError:
         print("Was unable to upload rechargeSummary for this month. Time to fix bugs!")
         exit(1)
-    folder_id ='1o14IjFlRZW4HN0ULdhdYvtpgqvMcx9GU'
+    folder_id ='1RPoEEkTW38tRgnLTYQxFz7bqwJjGGqF_'
     file1 = drive.CreateFile(
         {'title':file_name,
         "parents": [{"kind": "drive#fileLink","id": folder_id}]})

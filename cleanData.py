@@ -18,7 +18,7 @@ def clean_DF_MosquitoCrystal(df, dates):
 
     null_row = [
         [start_date, 'Stroud', 'Nobody', start_date, 'I used my own', 'TTP Standard 2µL (hanging drop)', '', 0, 'nan',
-         'nan', 'nan', '', '', '', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']]
+         'nan', 'nan', '', '', '', '', '', 0, 0, 0, '', '', '', '', '']]
     df = df.append(pd.DataFrame(null_row, columns=df.columns))
 
     # Look at 'Timestamp' column and convert to datetime type
@@ -52,7 +52,7 @@ def clean_DF_MosquitoLCP(df, dates):
 
     null_row = [
         [start_date, 'nan', 'nan', start_date, 'nan', 'nan', 0, 0, 'nan', 'nan', '', '', '', '', 0,
-         'nan', '', '', '', '', '', '', '', '', '', '', '']]
+         'nan', '', '', '', '', '']]
     df = df.append(pd.DataFrame(null_row, columns=df.columns))
 
     df.index = pd.to_datetime(df.pop('Timestamp'))

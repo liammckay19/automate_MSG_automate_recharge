@@ -95,6 +95,7 @@ def getGL(dates):
     amortizedExpenses = ['voucher']
     voucherExceptions = ['airgas', 'vpl', 'vantage point logistics', 'cdw-government', 'distributed-exception']
     monthlyExpenses = ['recharge']
+    largeExpenses = ['largepayment']
     payroll = ['payroll']
 
     # checks if strings of lst1 is a substring of any string in lst2 and returns array of bool
@@ -108,12 +109,28 @@ def getGL(dates):
     mask = (df.index >= start_date) & (df.index <= end_date)
     # df = df.loc[start_date:end_date]
     df = df.loc[mask]
+    # try:
+    lst_rechargeCategory = []
+    for index, row in df.iterrows():
+        s = row[['TrnsTyp', 'Description']]
+        if substringInListOfStrings(str(s[0]).lower(), amortizedExpenses) and not substringInListOfStrings(str(s[1]).lower(), voucherExceptions):
+            lst_rechargeCategory.append('amortizedExpenses')
+        elif substringInListOfStrings(str(s[0]).lower(), payroll):
+            lst_rechargeCategory.append('payroll')
+        elif substringInListOfStrings(str(s[0]).lower(), largeExpenses):
+            lst_rechargeCategory.append('largePayment')
+        else:
+            lst_rechargeCategory.append('monthlyExpenses')
 
-    df['Recharge Category'] = df[['TrnsTyp', 'Description']].apply(lambda s: 'amortizedExpenses'
-    if substringInListOfStrings(str(s[0]).lower(), amortizedExpenses) and \
-       not (substringInListOfStrings(str(s[1]).lower(), voucherExceptions)) \
-        else ('payroll' if substringInListOfStrings(str(s[0]).lower(), payroll)
-              else 'monthlyExpenses'), axis=1)
+    df['Recharge Category'] = lst_rechargeCategory
+    # df['Recharge Category'] = df[['TrnsTyp', 'Description']].apply(lambda s: 'amortizedExpenses'
+    # if substringInListOfStrings(str(s[0]).lower(), amortizedExpenses) and not (substringInListOfStrings(str(s[1]).lower(), voucherExceptions)) \
+    #     else ('payroll' if substringInListOfStrings(str(s[0]).lower(), payroll)
+    #     else ('monthlyExpenses' if substringInListOfStrings(str(s[0]).lower(), monthlyExpenses)
+    #           else 'monthlyExpenses'), axis=1)
+    # except ValueError:
+    #     print("Dates not found for GL. Run script on collatedGL_DPE")
+    #     exit(0)
     return df
 
 
@@ -162,34 +179,40 @@ def getCellByRowCol(df, rowHeader, rowSelector, colSelector):
 
 
 
-def main():
+def main(override_dates=[]):
     coldFile = glob.glob('./temp/20c*')[0]
     roomFile = glob.glob('./temp/4c*')[0]
 
-    # calculate start and end dates
-    start_date, end_date = '', ''
-    date_for_recharge = date.today()
+    if override_dates:
+        start_date=override_dates[0]
+        end_date=override_dates[1]
+        dates = [str(override_dates[0]), str(override_dates[1])]
+    else:
+        # calculate start and end dates
+        start_date, end_date = '', ''
+        date_for_recharge = date.today()
 
-    end_d = date_for_recharge.replace(day=1)
-    start_d = end_d - timedelta(days=1)
-    start_d = start_d.replace(day=1)
+        end_d = date_for_recharge.replace(day=1)
+        start_d = end_d - timedelta(days=1)
+        start_d = start_d.replace(day=1)
 
-    start_date = datetime.strptime(str(start_d), '%Y-%m-%d')
-    end_date = datetime.strptime(str(end_d) + '-23-59-59', '%Y-%m-%d-%H-%M-%S')
+        start_date = datetime.strptime(str(start_d), '%Y-%m-%d')
+        end_date = datetime.strptime(str(end_d) + '-23-59-59', '%Y-%m-%d-%H-%M-%S')
 
-    dates = [str(start_date), str(end_date)]
+        dates = [str(start_date), str(end_date)]
     print('The dates selected are: ' + dates[0] + ' to ' + dates[1])
-    coreUsers, associateUsers, regUsers, allUsers = gdrive.getPITypes()
+    coreUsers, associateUsers, regUsers, indUsers, allUsers = gdrive.getPITypes()
     df_mosquitoLog, df_mosquitoLCPLog, df_dragonflyLog, df_screenOrders = getGDriveLogUsage(dates)
     df_RockImager_1 = getRockImagerUsage(dates, coldFile)
     df_RockImager_2 = getRockImagerUsage(dates, roomFile)
     df_GL = getGL(dates)
     df_rechargeConst = gdrive.getRechargeConst()
+    df_queriedRechargeByGroup = gdrive.getQueriedRechargeByGroup()
     dfs_input = [df_mosquitoLog, df_mosquitoLCPLog, df_dragonflyLog, df_RockImager_1,
-                 df_RockImager_2, df_GL, df_screenOrders, df_rechargeConst]
+                 df_RockImager_2, df_GL, df_screenOrders, df_rechargeConst, df_queriedRechargeByGroup]
     # for df in dfs_input:
     #     print(df.head())
-    users = [coreUsers, associateUsers, regUsers, allUsers]
+    users = [coreUsers, associateUsers, regUsers, indUsers, allUsers]
     rechargeSummary, fileOut_lst, dfOut_lst = recharge.calculateRecharge(dfs_input, [start_date, end_date], users)
     print(rechargeSummary)
     directory = 'monthlyRechargesTemp/' + str(start_date)[0:10] + '_TO_' + str(end_date)[0:10] + '/'
@@ -200,6 +223,7 @@ def main():
                      str(start_date)[0:10] + '_TO_' + str(end_date)[0:10])
         print("saved in ", directory)
     subprocess.run(['open '+directory], shell=True)
+    return rechargeSummary
 
 if __name__ == '__main__':
     main()

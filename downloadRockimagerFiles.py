@@ -22,7 +22,7 @@ def file_matches_date(str1, str2, acceptable_wrong):
     return (matches >= len(str1) - 1 - acceptable_wrong)
 
 
-def main():
+def main(dates=[]):
     os.chdir('.')
     gauth = GoogleAuth()
     # Try to load saved client credentials
@@ -42,6 +42,8 @@ def main():
     drive = GoogleDrive(gauth)
 
     today = datetime.date.today()
+    if dates:
+        today = dates[1]
     first = today.replace(day=1)
     current_month = first.month
     current_year = first.year
@@ -58,13 +60,13 @@ def main():
         month=current_month, year=str(current_year),
         pmonth=last_month, pyear=str(last_year))
 
-    room_folder_id = '1Bk8D2ZkbpX3kkJHLM1lduPTD_RbCiXDN'
-    cold_folder_id = '1U1a6RnhTr37n3BUFEmA4K4j7D6titeMv'
+    room_folder_id = '1xlE5MW5Lyetb8IqCqfz62LQNVkE17pSv'
+    cold_folder_id = '12o6Hl6rVPmgaB3YJZTSeATjTk9tw9oCC'
 
     # print(cold_log)
-    # room_file_list = drive.ListFile({'q': "'1Bk8D2ZkbpX3kkJHLM1lduPTD_RbCiXDN' in parents and trashed=false"}).GetList()
+    # room_file_list = drive.ListFile({'q': "'1xlE5MW5Lyetb8IqCqfz62LQNVkE17pSv' in parents and trashed=false"}).GetList()
     gdrive_room_list = drive.ListFile(
-        {'q': "'1Bk8D2ZkbpX3kkJHLM1lduPTD_RbCiXDN' in parents and trashed=false"}).GetList()
+        {'q': "'1xlE5MW5Lyetb8IqCqfz62LQNVkE17pSv' in parents and trashed=false"}).GetList()
     for gdrive_room_file in gdrive_room_list:
         if file_matches_date(gdrive_room_file['title'], room_log, 1):
             room_log_id = gdrive_room_file['id']
@@ -77,7 +79,7 @@ def main():
     download_room_log.GetContentFile(filename="temp/" + room_log)
 
     gdrive_cold_list = drive.ListFile(
-        {'q': "'1U1a6RnhTr37n3BUFEmA4K4j7D6titeMv' in parents and trashed=false"}).GetList()
+        {'q': "'12o6Hl6rVPmgaB3YJZTSeATjTk9tw9oCC' in parents and trashed=false"}).GetList()
     for gdrive_cold_file in gdrive_cold_list:
         if file_matches_date(gdrive_cold_file['title'], cold_log, 1):
             cold_log_id = gdrive_cold_file['id']

@@ -100,6 +100,8 @@ def getPITypes():
     coreUsers = []
     associateUsers = []
     regUsers = []
+    indUsers = []
+    otherUsers = []
 
     k = 1 #skip first row
     while (k < len(row_data)):
@@ -109,10 +111,14 @@ def getPITypes():
             regUsers.append(pi)
         elif (user_type=='associate'):
             associateUsers.append(pi)
-        else:
+        elif (user_type=='core'):
             coreUsers.append(pi)
+        elif (user_type=='industry'):
+            indUsers.append(pi)
+        else: 
+            otherUsers.append(pi)
         k +=1
-    return [coreUsers,associateUsers,regUsers,coreUsers + associateUsers + regUsers]
+    return [coreUsers,associateUsers,regUsers, indUsers, otherUsers, coreUsers + associateUsers + regUsers+indUsers+otherUsers]
 
 def getRechargeConst():
     df_rechargeConst = gc.open_by_key('1d6GVWGwwrlh_lTKxVRI08xZSiE__Zieu3WWtwbmOMlE'
@@ -271,7 +277,7 @@ def getCellByRowCol(df, rowHeader, rowSelector, colSelector):
 def calculateRecharge(dfs,date_range):
     start_date,end_date = date_range[0],date_range[1]
     [df_mosquitoLog, df_mosquitoLCPLog, df_dragonflyLog, df_RockImager_1, 
-        df_RockImager_2, df_GL, df_screenOrders, df_rechargeConst] = dfs
+        df_RockImager_2, df_GL, df_screenOrders, df_rechargeConst, df_queriedRechargeByGroup] = dfs
     
     # rechargeDict = [
     #                 'Prealiquoted hanging drop commerical screen',
@@ -311,7 +317,10 @@ def calculateRecharge(dfs,date_range):
     assocFacilityFee = findRechargeConst('Assoc facility fee','Price')
     regMult = findRechargeConst('Regular use multiplier','Price')
     regFacilityFee = findRechargeConst('Regular facility fee','Price')
+    indMult = findRechargeConst('Industry use multiplier','Price')
+    indFacilityFee = findRechargeConst('Industry facility fee','Price')
 
+    print(indMult, indFacilityFee)
     # Get data from facilitySuppliesPricing (https://docs.google.com/spreadsheets/d/1d6GVWGwwrlh_lTKxVRI08xZSiE__Zieu3WWtwbmOMlE/edit#gid=0)
     costHDP = findRechargeConst('96-well Greiner Hanging drop plate','Price/Qty') #greiner 96 well hanging drop plate
     costSDP = findRechargeConst('MRC2 Sitting drop plate','Price/Qty') #swis mrc2 96 well sitting drop plate
@@ -403,7 +412,9 @@ def calculateRecharge(dfs,date_range):
         if user in associateUsers:
             users.append(user)
             usersFee.append(assocFacilityFee)
-
+        if user in industryUsers:
+            users.append(user)
+            usersFee.append(indFacilityFee)
 
     monthIndex = pd.date_range(start_date,end_date,freq='M')
     numMonths = len(monthIndex)
@@ -461,6 +472,9 @@ def calculateRecharge(dfs,date_range):
 
     monthlyRechargeTotal.loc[((monthlyRechargeTotal.index.levels[0],
         associateUsers),'Use Multiplier')] = assocMult
+
+    monthlyRechargeTotal.loc[((monthlyRechargeTotal.index.levels[0],
+        industryUsers),'Use Multiplier')] = indMult
 
     lst_monthlyExpenses = []
     lst_payroll = []
@@ -527,8 +541,9 @@ if __name__ == '__main__':
 
     dates = [str(start_date),str(end_date)]
     print('The dates selected are: ' + dates[0] + ' to ' + dates[1])
-    gc = pyg.authorize(service_file='../msg-Recharge-24378e029f2d.json')
-    coreUsers, associateUsers, regUsers, allUsers = getPITypes()
+    gc = pyg.authorize(service_file='msg-Recharge-24378e029f2d.json')
+# [coreUsers,associateUsers,regUsers, indUsers, otherUsers, coreUsers + associateUsers + regUsers+indUsers+otherUsers]
+    coreUsers, associateUsers, regUsers, industryUsers,otherUsers, allUsers = getPITypes()
     df_mosquitoLog, df_mosquitoLCPLog, df_dragonflyLog, df_screenOrders = getGDriveLogUsage(dates)
     df_RockImager_1 = getRockImagerUsage(dates)
     df_RockImager_2 = getRockImagerUsage(dates)

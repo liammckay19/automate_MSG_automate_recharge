@@ -7,6 +7,7 @@ Author: Liam McKay (liammckay19)
  
 ## Financial Features
 - support for external rate (Industry partners) 
+- support for large expenses 
 
 ### External Rate Calculation:
 1. workingCapital, priorYearBalance, totalLabPersonnel, facilitiesAndAdministrationRate are all gathered from the XRAY Account manager 
@@ -21,6 +22,12 @@ External Rate per Month = [(Actual Monthly Expense +1/12 of Working Capital + Pr
 
 Total Recharge = External Rate per Month * volume
 ```
+
+### Large Expenses:
+1. calculate % proportion of usage for each lab over all time 
+2. normalize these proportions to add to 1
+3. cost per lab of large expense = average proportion (%) * total large expenditure ($)
+4. total cost per lab = $ recharge + $ large expense 
 
 ## Installation
 

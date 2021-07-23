@@ -4,6 +4,18 @@ Author: Liam McKay (liammckay19)
  Automates Loren Jiang's scripts and Google Sheets for doing 1 month previous. If today was January 12, 2020 it would download google forms and calculate recharge for December 1, 2019 to January 1, 2019 
  
  With the addition of a scheduled GUI automation to the RockImagers in the 4C and 20C room, taking time out of downloading Drive files will free time from the lab manager's day.
+ 
+## Financial Features
+- support for external rate (Industry partners) 
+
+### External Rate Calculation:
+1. workingCapital, priorYearBalance, totalLabPersonnel, facilitiesAndAdministrationRate are all gathered from the XRAY Account manager 
+``` volume = 1 - how many months you are charging for
+    unitLabPersonnel = 1 - how many people per every external group (needs to be variable some how)
+    External Rate per Month = [(Actual Monthly Expense +1/12 of Working Capital + Prior Year Balance/12) x (Unit Lab Personnel/Total Lab Personnel) + Surplus Revenue] x 26% Facilities & Administration Rate
+    actual monthly expense = (Month Dist. Cost + Mosquito Total Cost + RockImager Total Cost + Large Expense Cost + DFly Total Cost) x Use Multiplier 
+    # surplus revenue = Screens Total Cost + Payroll Cost + Facility Fee
+```
 
 ## Installation
 

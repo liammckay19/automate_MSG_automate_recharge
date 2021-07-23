@@ -10,11 +10,16 @@ Author: Liam McKay (liammckay19)
 
 ### External Rate Calculation:
 1. workingCapital, priorYearBalance, totalLabPersonnel, facilitiesAndAdministrationRate are all gathered from the XRAY Account manager 
-``` volume = 1 - how many months you are charging for
-    unitLabPersonnel = 1 - how many people per every external group (needs to be variable some how)
-    External Rate per Month = [(Actual Monthly Expense +1/12 of Working Capital + Prior Year Balance/12) x (Unit Lab Personnel/Total Lab Personnel) + Surplus Revenue] x 26% Facilities & Administration Rate
-    actual monthly expense = (Month Dist. Cost + Mosquito Total Cost + RockImager Total Cost + Large Expense Cost + DFly Total Cost) x Use Multiplier 
-    # surplus revenue = Screens Total Cost + Payroll Cost + Facility Fee
+``` 
+volume = 1 - how many months you are charging for
+unitLabPersonnel = 1 - how many people per every external group (needs to be variable some how)
+
+actual monthly expense = (Month Dist. Cost + Mosquito Total Cost + RockImager Total Cost + Large Expense Cost + DFly Total Cost) x Use Multiplier 
+surplus revenue = Screens Total Cost + Payroll Cost + Facility Fee
+
+External Rate per Month = [(Actual Monthly Expense +1/12 of Working Capital + Prior Year Balance/12) x (Unit Lab Personnel/Total Lab Personnel) + Surplus Revenue] x 26% Facilities & Administration Rate
+
+Total Recharge = External Rate per Month * volume
 ```
 
 ## Installation

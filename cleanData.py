@@ -20,17 +20,17 @@ def clean_DF_MosquitoCrystal(df, dates):
         [start_date, 'Stroud', 'Nobody', start_date, 'I used my own', 'TTP Standard 2µL (hanging drop)', '', 0, 'nan',
          'nan', 'nan', '', '', '', '', '', 0, 0, 0, '', '', '', '', '']]
     df = df.append(pd.DataFrame(null_row, columns=df.columns))
-
     # Look at 'Timestamp' column and convert to datetime type
     df.index = pd.to_datetime(df.pop('Timestamp'))
     df = df[df.index.notnull()]
     mask = (df.index >= start_date) & (df.index <= end_date)
     df = df.loc[mask]
+    print(df)
     df['Group'] = df['Group'].map(lambda s: s.lower())  # make group name lowercase to standardize
     df['Mosq Tips'] = pd.to_numeric(df['Mosq Tips'], errors='coerce').fillna(0)  # convert objects to numeric
-    df['NumSDP'] = pd.to_numeric(df['NumSDP'], errors='coerce').fillna(0)  # convert objects to numeric
-    df['NumHDP'] = pd.to_numeric(df['NumHDP'], errors='coerce').fillna(0)  # convert objects to numeric
-    df['Mosq Dur (hr)'] = pd.to_numeric(df['Mosq Dur (hr)'], errors='coerce').fillna(0)  # convert objects to numeric
+    df['NumSDP'] = df['NumSDP'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
+    df['NumHDP'] = df['NumHDP'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
+    df['Mosq Dur (hr)'] = df['Mosq Dur (hr)'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
     return df
 
 
@@ -61,11 +61,11 @@ def clean_DF_MosquitoLCP(df, dates):
     df = df.loc[mask]
     df['Group'] = df['Group'].map(lambda s: s.lower())  # make group name lowercase to standardize
     # convert columns to numeric values as they should be
-    df['Mosq LCP Plates Set-up'] = pd.to_numeric(df['Mosq LCP Plates Set-up'], errors='coerce')
-    df['NumSDP'] = pd.to_numeric(df['NumSDP'], errors='coerce').fillna(0)
-    df['NumHDP'] = pd.to_numeric(df['NumHDP'], errors='coerce').fillna(0)
-    a = pd.to_numeric(df['Mosq Tips'].iloc[:, 0], errors='coerce').fillna(0)
-    b = pd.to_numeric(df['Mosq Tips'].iloc[:, 1], errors='coerce').fillna(0)
+    df['Mosq LCP Plates Set-up'] = df['Mosq LCP Plates Set-up'].apply(pd.to_numeric, errors='coerce').fillna(0)
+    df['NumSDP'] = df['NumSDP'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
+    df['NumHDP'] = df['NumHDP'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
+    a = df['Mosq Tips'].iloc[:, 0].apply(pd.to_numeric, errors='coerce').fillna(0)
+    b = df['Mosq Tips'].iloc[:, 1].apply(pd.to_numeric, errors='coerce').fillna(0)
     df['Cum Mosq Tips'] = a.add(b)
     return df
 
@@ -89,12 +89,12 @@ def clean_DF_Dragonfly(df, dates):
     mask = (df.index >= start_date) & (df.index <= end_date)
     df = df.loc[mask]
     df['Group'] = df['Group'].map(lambda s: s.lower())  # make group name lowercase to standardize
-    df['DFly New Tips'] = pd.to_numeric(df['DFly New Tips'], errors='coerce').fillna(0)  # convert objects to numeric
-    df['DFly New Reservoirs'] = pd.to_numeric(df['DFly New Reservoirs'], errors='coerce').fillna(
+    df['DFly New Tips'] = df['DFly New Tips'].apply(pd.to_numeric, errors='coerce').fillna(0)  # convert objects to numeric
+    df['DFly New Reservoirs'] = df['DFly New Reservoirs'].apply(pd.to_numeric, errors='coerce').fillna(
         0)  # convert objects to numeric
-    df['DFly New Mixers'] = pd.to_numeric(df['DFly New Mixers'], errors='coerce').fillna(
+    df['DFly New Mixers'] = df['DFly New Mixers'].apply(pd.to_numeric, errors='coerce').fillna(
         0)  # convert objects to numeric
-    df['DFly New Plates'] = pd.to_numeric(df['DFly New Plates'], errors='coerce').fillna(
+    df['DFly New Plates'] = df['DFly New Plates'].apply(pd.to_numeric, errors='coerce').fillna(
         0)  # convert objects to numeric
     return df
 

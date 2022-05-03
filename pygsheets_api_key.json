@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "msg-recharge-ucsf",
+  "private_key_id": "3127cfa0e25c83e94973fbaaf7e57af77669cfa7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0j9WzQIqPENM4\nGKSrxXpUjRrBl5HoZcS1+Rn6S8Djvvm4lFp9R3S699tQaTTKiJ8cmGQJGARYcjMF\n9B4PEg/nyhhib43xE+I5BV78evEXq33/9iHIOarV5tmVgvGZAcIJbMw3clSHHNMw\nCV0SsbC5OzFINFLHyVvz/VSTAuMzPlGBKKj7jEZ2D3tiYfXbd03fOE+67YpKfyTP\nSyI1yApyiYt7/h6r4l1zvHIiLpm7lTSYTYsNVS9xeP2AcDyxqV81Gc7ksLFScxIK\nSc966YveycoueP76khIWIy/Y81jpLIaK4xg1SWCgORs0rveUxny92yrittXPvXWS\nvm8/Tss7AgMBAAECggEAGTXuChmsXv5j53S1ZVBs3KpY/ofJtQ+kkB3oTSTPmVz8\nZBO+sLhN6Z8azZbq6o553NXAPe7PCIRlcGLd4Y/NjbkPf4sA4BS9JOYFla4axInK\nzXbRz7GRk00ouzHtxsXSkFtTBjjd6YGSUSY1ixspSCumHWVE26VXQ/Fuohoom+pO\nzEdD/aTBNOTwTVYWzSwC5CQUv6vfL+hwm9TdnRK3v/O+ZC7kyLIE1jqFCMExfV66\nQr5MHCondYpWeirZPHXRZafQWqKjId0SBmDj8z4Xo/TrbaIBySgsuI6QmEvxhz6u\nvNTF/YrxGm11QwyiLCpSeEsgREWwp+FUpUZJbSbfkQKBgQDsLz03lhyGtR3JMUGH\nYWAqtPp1mjYZfRSKpGtSeH5HqQeLnU7Hb5zdeSaTLiBrgtjSTLjvF6O7alpq3TWr\nWjBqhjEf8Xot0BRBdstZwJqGhS6tWVTgegwVZvF07hSg1F6t0fIYgRXs0V1+IZ3w\nrk4612LILM/sitQ57ldIfK7dCwKBgQDDte8vLZoxmbBZ52zjRaAfgoIzt0FeijL0\nzdpNN1rU4h0JSTnTb2Po2zMevw+yzQ/SEAfZV2wNxJGZIMdZSCrybo6K4Ck+zHX0\nXBMeT6WKtpINKgm2JQp82kxYfFG/84/daHr4cvm0XiNsmtNxuHnyO89rTV5b/9K9\nMu6CuJnIkQKBgQC0cL6vOgLfM33nGLd8i3tiBVQYBtHwFSxdY5IOtrmbW9rE4lCu\nc2n/ljBPX30rRhMKT8019PSFGZKsdAYtvECjEZR0WBNE7uSawvxGvKwRu6xWiZob\nyYJz02sDL2UZHkabO3tfFze97pIj6+DzYOepcqYoUnwjtki/XYTXf1JE0wKBgBRQ\nx3JbRn1NmdvLRSdWa+e5cXCS3ktFB0MYN0f6rggZLLBxFHqZPoLGdkkDxkpmNPU2\nSspJ4+KN/BssJuVis2qVBWDvIfjt2nSyNh3YYLPEfea17Wol8C/DrVcmGIpXayCt\nns45iSgq+XxlmftdDfOSN9bIojnklWikZ9PT+8qxAoGBAIxMR4ENTC+8tUgl+yoL\n08UA0pUUfAcS5jGgwlGjdwZanOdOlkU2P76zVuryarOBuM3/vEXKkvLf7JsqkCBT\nVIEe9odZk3WTsOh0t7OCuYQC/WSzjkFd3vkfjbF2lNVxcjV3wdSg8BfYrsxddUiB\n3xXZj68MKAizJTcAv1rWYT54\n-----END PRIVATE KEY-----\n",
+  "client_email": "test2-881@msg-recharge-ucsf.iam.gserviceaccount.com",
+  "client_id": "111588757952835671034",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test2-881%40msg-recharge-ucsf.iam.gserviceaccount.com"
+}

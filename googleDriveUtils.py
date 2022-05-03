@@ -122,10 +122,11 @@ def appendToCollatedRechargeSheet(rechargeSummary):
     wks = gc.open_by_key(
         "1B69agpwT7HMlldmTv9-kkupokVjVU7VS2zX4u59JlZc"
     ).worksheet_by_title("collatedRecharge")
-    print(rechargeSummary)
     rechargeSummary = rechargeSummary.reset_index()
-    rechargeSummary["Month/Year"] = pd.to_datetime(rechargeSummary["Month/Year"])
-    # print(rechargeSummary)
+
+    rechargeSummary["Month/Year"] = pd.to_datetime(rechargeSummary["Date"])
+    rechargeSummary = rechargeSummary.drop("Date", 1)
+    rechargeSummary["Month/Year"] = rechargeSummary["Month/Year"] - pd.Timedelta(days=1)
 
     rechargeSummary["Month/Year"] = rechargeSummary["Month/Year"].dt.strftime("%m | %Y")
     # rechargeSummary = rechargeSummary.drop(columns=["Month/Year"])

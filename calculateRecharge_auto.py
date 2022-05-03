@@ -174,7 +174,7 @@ def getGL(dates):
             lst_rechargeCategory.append("largePayment")
         else:
             lst_rechargeCategory.append("monthlyExpenses")
-
+    # print(lst_rechargeCategory)
     df["Recharge Category"] = lst_rechargeCategory
     # df['Recharge Category'] = df[['TrnsTyp', 'Description']].apply(lambda s: 'amortizedExpenses'
     # if substringInListOfStrings(str(s[0]).lower(), amortizedExpenses) and not (substringInListOfStrings(str(s[1]).lower(), voucherExceptions)) \
@@ -184,20 +184,27 @@ def getGL(dates):
     # except ValueError:
     #     print("Dates not found for GL. Run script on collatedGL_DPE")
     #     exit(0)
+    df.reset_index()
+    df["Date"] = [end_date] * len(df.index)
+    df["Date"] = pd.to_datetime(df["Date"])
+    df = df.set_index("Date")
     return df
 
 
 # Make the output files more Excel friendly
 # assumes index in TimeStamp format categorized by month (level -0)
 def makeExcelFriendly(df):
-    df.index.set_names(["Month/Year"], [0], inplace=True)
+    df = df.reset_index()
+    df["Month/Year"] = pd.to_datetime(df["Date"]).dt.strftime("%m/%Y")
+
+    # df.index.set_names([""], [0], inplace=True)
     print(df)
-    df.index.set_levels(
-        df.index.levels[0].strftime("%m/%Y"),
-        level=0,
-        inplace=True,
-        verify_integrity=False,
-    )
+    # df.index.set_levels(
+    #     df.index.levels[0].strftime("%m/%Y"),
+    #     level=0,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
     return df
 
 
@@ -215,9 +222,11 @@ def exportToFile(df, pth, fileExt=".xlsx"):
 
 
 def getFilesByPI(df_lst, pth_lst, PI_lst, direc):
+
     for df, pth in zip(df_lst, pth_lst):
+        df = df.reset_index()
         for PI in PI_lst:
-            bools = df.index.get_level_values("Group") == PI
+            bools = df["Group"] == PI
             if any(bools):
                 a = df.loc[bools]
                 pi_folder = direc + PI + "/"

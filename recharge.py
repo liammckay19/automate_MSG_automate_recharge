@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from dateutil.relativedelta import *
 from inspect import currentframe, getframeinfo
 
 
@@ -62,8 +63,7 @@ def itemizeDragonflyLog(
         + itemizedDFlyMonthByPI["DFly New Reservoirs"] * float(costDFlyReservoir)
         + itemizedDFlyMonthByPI["DFly New Tips"] * float(costDFlyTip)
     )
-
-    return itemizedDFlyMonthByPI[
+    itemizedDFlyMonthByPI = itemizedDFlyMonthByPI[
         [
             "Group",
             "Name",
@@ -79,6 +79,11 @@ def itemizeDragonflyLog(
             "DFly Total Cost",
         ]
     ]  # reorganize columns
+    itemizedDFlyMonthByPI["Date"] = [str(end_date.date())] * len(
+        itemizedDFlyMonthByPI.index
+    )
+    itemizedDFlyMonthByPI = itemizedDFlyMonthByPI.set_index(["Date", "Group"])
+    return itemizedDFlyMonthByPI
 
 
 def itemizeRockimagerLog(
@@ -125,6 +130,12 @@ def itemizeRockimagerLog(
 
     # reverse index (descending date)
     itemizedRockMonthByPI_1 = itemizedRockMonthByPI_1.iloc[::-1]
+    itemizedRockMonthByPI_1["Date"] = [str(end_date.date())] * len(
+        itemizedRockMonthByPI_1.index
+    )
+    itemizedRockMonthByPI_1["Group"] = itemizedRockMonthByPI_1["Project"]
+
+    itemizedRockMonthByPI_1 = itemizedRockMonthByPI_1.set_index(["Date", "Group"])
 
     rockImagerUsageMonthByPI_2 = df_RockImager_2.groupby(
         [pd.Grouper(freq="M"), "Group"]
@@ -147,6 +158,13 @@ def itemizeRockimagerLog(
     # reverse index (descending date)
     itemizedRockMonthByPI_2 = itemizedRockMonthByPI_2.iloc[::-1]
 
+    itemizedRockMonthByPI_2["Date"] = [str(end_date.date())] * len(
+        itemizedRockMonthByPI_2.index
+    )
+    itemizedRockMonthByPI_2["Group"] = itemizedRockMonthByPI_2["Project"]
+
+    itemizedRockMonthByPI_2 = itemizedRockMonthByPI_2.set_index(["Date", "Group"])
+
     return (
         itemizedRockMonthByPI_1.add(itemizedRockMonthByPI_2),
         itemizedRockMonthByPI_1,
@@ -167,22 +185,25 @@ def itemizeMosquitoLogs(
         "Mosq Tips",
         "Mosq Dur (hr)",
     ]
+    # print(df_mosquitoLog.columns)
+    mosqUsageMonthByPI = df_mosquitoLog[df_mosquitoLog.index <= start_date]
+    mosqUsageMonthByPI = df_mosquitoLog[df_mosquitoLog.index >= end_date]
 
-    mosqUsageMonthByPI = df_mosquitoLog.groupby([pd.Grouper(freq="M"), "Group"])
-    print(mosqUsageMonthByPI)
+    itemizedMosqCryMonthByPI = mosqUsageMonthByPI.apply(lambda x: x.head(len(x.index)))[
+        wantedMosqCol
+    ]
+    itemizedMosqCryMonthByPI = df_mosquitoLog.groupby("Group").sum()
+    # print(mosqUsageMonthByPI)
     mosqCrystalUsageYearByPI = df_mosquitoLog.groupby(
         [df_mosquitoLog.index.year, "Group"]
     )
 
-    itemizedMosqCryMonthByPI = mosqUsageMonthByPI.apply(lambda x: x.head(len(x.index)))[
-        wantedMosqCol
-    ].loc[start_date:end_date]
-    # itemizedMosqCryMonthByPI['Group'] = itemizedMosqCryMonthByPI.index
+    # print(mosqUsageMonthByPI, start_date, end_date)
+    itemizedMosqCryMonthByPI["Group"] = itemizedMosqCryMonthByPI.index
 
     itemizedMosqCryMonthByPI["Cost/tip"] = float(costMosqTip)
     itemizedMosqCryMonthByPI["Cost/HDSConsume"] = float(costHDSConsume)
     itemizedMosqCryMonthByPI["Cost/SDSConsume"] = float(costSDSConsume)
-    print(itemizedMosqCryMonthByPI)
     # itemizedMosqCryMonthByPI = itemizedMosqCryMonthByPI.drop(["Name"])
     itemizedMosqCryMonthByPI["Mosquito Total Cost"] = (
         itemizedMosqCryMonthByPI["Cost/tip"] * itemizedMosqCryMonthByPI["Mosq Tips"]
@@ -194,7 +215,14 @@ def itemizeMosquitoLogs(
 
     # reverse index (descending date)
     itemizedMosqCryMonthByPI = itemizedMosqCryMonthByPI.iloc[::-1]
-    return itemizedMosqCryMonthByPI
+    itemizedMosqCryMonthByPI["Date"] = [str(end_date.date())] * len(
+        itemizedMosqCryMonthByPI.index
+    )
+    mi = itemizedMosqCryMonthByPI.set_index(
+        ["Date", "Group"]
+    )  # multiindex with date, group
+
+    return mi
 
 
 def itemizeScreenOrders(df_screenOrders, start_date, end_date):
@@ -242,22 +270,28 @@ def itemizeFacilityFees(
     ind = []
     for m in monthIndex:
         start = datetime(m.year, m.month, 1)  # dummy date
-        end = datetime(m.year, m.month, 10)  # dummy date
+        end = end_date  # dummy date
 
         td = end - start
         delta = td // len(users)
 
         for k in range(lenUsers):
-            ind.append(start)
+            ind.append(start + relativedelta(days=+1))
             start += delta
 
     df_facFee = pd.DataFrame(index=ind, columns=["Group", "Facility Fee"])
-    df_facFee.index = pd.to_datetime(df_facFee.index)
+
     df_facFee["Group"] = users
     df_facFee["Facility Fee"] = usersFee
     df_facFee = df_facFee.groupby([pd.Grouper(freq="M"), "Group"]).sum(
         numeric_only=True
     )
+    df_facFee = df_facFee.reset_index()
+
+    df_facFee["Date"] = [str(end_date.date())] * len(df_facFee.index)
+    # df_facFee["Group"] = df_facFee.index
+    df_facFee = df_facFee.set_index(["Date", "Group"])
+
     return df_facFee
 
 
@@ -525,7 +559,6 @@ def calculateRecharge(dfs, date_range, users):
         start_date,
         end_date,
     )
-
     a = itemizedMosqCryMonthByPI.sum(level=[0, 1], numeric_only=True)[
         ["NumHDP", "NumSDP", "Mosq Tips", "Mosquito Total Cost"]
     ]
@@ -544,11 +577,11 @@ def calculateRecharge(dfs, date_range, users):
     monthlyRechargeTotal = pd.concat([a, b, c, d, df_facFee], axis=1).fillna(0)
     monthlyRechargeTotal = monthlyRechargeTotal.reset_index()
     group_index = list(df_queriedRechargeByGroup["Group"])
-    date_ = str(monthlyRechargeTotal["level_0"][0].date())
-    date_index = [str(monthlyRechargeTotal["level_0"][0].date())] * len(group_index)
-
+    date_ = str(monthlyRechargeTotal["level_0"][0])
+    date_index = [str(monthlyRechargeTotal["level_0"][0])] * len(group_index)
     recharge_array_of_index = [date_index, group_index]
     index = pd.MultiIndex.from_arrays(recharge_array_of_index, names=("Date", "Group"))
+    print(monthlyRechargeTotal)
     # UGLY UGLY CODE that normalizes the average usage proportion of each group
     # totalAvgUsageProportion=sum(list(pd.merge(monthlyRechargeTotal, df_queriedRechargeByGroup[['Group','avg Usage prop']], how='right', on='Group')['avg Usage prop']))
     # monthlyRechargeTotal = monthlyRechargeTotal.reset_index().merge(df_queriedRechargeByGroup[['Group','avg Usage prop']], how='right', on='Group').set_index('index')
@@ -587,46 +620,46 @@ def calculateRecharge(dfs, date_range, users):
         + monthlyRechargeTotal["Rock Dur (min)"]
         # + monthlyRechargeTotal['DFly New Plates Set-up'] * 25
     )
-    monthlyRechargeTotal = monthlyRechargeTotal.set_index(["level_0", "Group"])
-    a1 = monthlyRechargeTotal.groupby(level=[0, 1]).sum().groupby(level=0)
+    monthlyRechargeTotal = monthlyRechargeTotal.set_index(["Date", "Group"])
 
-    rawUsagePercent = a1.apply(lambda x: x["Raw Usage"] / x["Raw Usage"].sum())
-    rup_t = rawUsagePercent.T
-    rup_t.rename(columns={rup_t.columns[0]: "Usage prop"}, inplace=True)
-    rup_t = rup_t.reset_index()
-    monthlyRechargeTotal = pd.merge(
-        monthlyRechargeTotal, rup_t[["Group", "Usage prop"]], on="Group", how="left"
-    )
+    a1 = monthlyRechargeTotal.groupby(level=[0, 1]).sum()
+
+    # # rup_t = rawUsagePercent.T# rup_t.rename(columns={rup_t.columns[0]: "Usage prop"}, inplace=True)
+    # # rup_t = rup_t.reset_index()
+    # monthlyRechargeTotal = pd.merge(
+    #     monthlyRechargeTotal,
+    #     rawUsagePercent[["Group", "Usage prop"]],
+    #     on="Group",
+    #     how="left",
+    # )
+    monthlyRechargeTotal["Usage prop"] = a1["Raw Usage"] / a1["Raw Usage"].sum()
+
+    # monthlyRechargeTotal = monthlyRechargeTotal.set_index(["Date", "Group"])
+    # print(monthlyRechargeTotal)
+    # monthlyRechargeTotal.reset_index()
+
     print(
         "monthlyRechargeTotal usageprop sum to 1 ? = ",
         monthlyRechargeTotal["Usage prop"].sum(),
     )
 
     df_GL_monthlyExpenses = (
-        df_GL[df_GL["Recharge Category"] == "monthlyExpenses"]
-        .groupby([pd.Grouper(freq="M")])
-        .sum()
-        .loc[start_date:end_date]
+        df_GL[df_GL["Recharge Category"] == "monthlyExpenses"].groupby("Date").sum()
     )
 
-    df_GL_payroll = (
-        df_GL[df_GL["Recharge Category"] == "payroll"]
-        .groupby([pd.Grouper(freq="M")])
-        .sum()
-        .loc[start_date:end_date]
-    )
+    df_GL_payroll = df_GL[df_GL["Recharge Category"] == "payroll"].groupby("Date").sum()
 
     df_GL_largePayment = (
-        df_GL[df_GL["Recharge Category"] == "largePayment"]
-        .groupby([pd.Grouper(freq="M")])
-        .sum()
-        .loc[start_date:end_date]
+        df_GL[df_GL["Recharge Category"] == "largePayment"].groupby("Date").sum()
     )
     # print(monthlyRechargeTotal)
 
     monthlyRechargeTotal["Use Multiplier"] = regMult
-
+    monthlyRechargeTotal = monthlyRechargeTotal.reset_index()
     # Set Use Multiplier column and payments for Core and Assoc users
+    # monthlyRechargeTotal["Group"] = [
+    #     monthlyRechargeTotal.iloc[0, n] for n in range(len(monthlyRechargeTotal.index))
+    # ]
 
     monthlyRechargeTotal.loc[
         ((monthlyRechargeTotal["Group"].isin(coreUsers)), "Use Multiplier")
@@ -648,9 +681,8 @@ def calculateRecharge(dfs, date_range, users):
     print(
         "(avg usg prop) should be 1.0 = ", monthlyRechargeTotal["avg Usage prop"].sum()
     )
-    monthlyRechargeTotal["Date"] = date_
+    # monthlyRechargeTotal["Date"] = date_
     monthlyRechargeTotal["Date"] = pd.to_datetime(monthlyRechargeTotal["Date"])
-
     monthlyRechargeTotal = monthlyRechargeTotal.set_index(["Date", "Group"])
     lst_monthlyExpenses = []
     lst_largeExpenses = []
@@ -683,9 +715,6 @@ def calculateRecharge(dfs, date_range, users):
             lst_payroll.append(row["Usage prop"] * diff)
             print("price for payroll", row["Usage prop"], diff, "= ", lst_payroll[-1])
 
-        else:
-            lst_monthlyExpenses.append(0)
-            lst_payroll.append(0)
     monthlyRechargeTotal[
         "Month Dist. Cost"
     ] = lst_monthlyExpenses  # distributed costs include everything except pay-per-use consumables and base salary/benefits
@@ -741,31 +770,30 @@ def calculateRecharge(dfs, date_range, users):
         "dragonflyUsage" + daterange,
         "screenOrders" + daterange,
     ]
-
-    itemizedMosqCryMonthByPI.index.set_levels(
-        itemizedMosqCryMonthByPI.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
-        level=2,
-        inplace=True,
-        verify_integrity=False,
-    )
-    itemizedRockMonthByPI_1.index.set_levels(
-        itemizedRockMonthByPI_1.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
-        level=2,
-        inplace=True,
-        verify_integrity=False,
-    )
-    itemizedRockMonthByPI_2.index.set_levels(
-        itemizedRockMonthByPI_2.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
-        level=2,
-        inplace=True,
-        verify_integrity=False,
-    )
-    itemizedDFlyMonthByPI.index.set_levels(
-        itemizedDFlyMonthByPI.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
-        level=2,
-        inplace=True,
-        verify_integrity=False,
-    )
+    # itemizedMosqCryMonthByPI.index.set_levels(
+    #     itemizedMosqCryMonthByPI.index.levels[0].strftime("%m/%d/%Y %H:%M:%S"),
+    #     level=0,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
+    # itemizedRockMonthByPI_1.index.set_levels(
+    #     itemizedRockMonthByPI_1.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
+    #     level=2,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
+    # itemizedRockMonthByPI_2.index.set_levels(
+    #     itemizedRockMonthByPI_2.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
+    #     level=2,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
+    # itemizedDFlyMonthByPI.index.set_levels(
+    #     itemizedDFlyMonthByPI.index.levels[2].strftime("%m/%d/%Y %H:%M:%S"),
+    #     level=2,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
     wantedSOCol = [
         "Group",
         "Requested By",
@@ -782,12 +810,12 @@ def calculateRecharge(dfs, date_range, users):
     )
     itemizedSOMonthByPI = itemizedSOMonthByPI.iloc[::-1]
 
-    itemizedSOMonthByPI.index.set_levels(
-        itemizedSOMonthByPI.index.levels[2].strftime("%m/%d/%Y %H:%M:%S").values,
-        level=2,
-        inplace=True,
-        verify_integrity=False,
-    )
+    # itemizedSOMonthByPI.index.set_levels(
+    #     itemizedSOMonthByPI.index.levels[2].strftime("%m/%d/%Y %H:%M:%S").values,
+    #     level=2,
+    #     inplace=True,
+    #     verify_integrity=False,
+    # )
 
     dfOut = [
         itemizedMosqCryMonthByPI,

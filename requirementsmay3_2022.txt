@@ -8,7 +8,7 @@ cachetools==4.2.4
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.9
-cryptography==36.0.1
+cryptography==39.0.1
 et-xmlfile==1.1.0
 google-api-core==2.3.2
 google-api-python-client==2.33.0
